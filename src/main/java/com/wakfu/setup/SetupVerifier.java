@@ -46,14 +46,14 @@ public class SetupVerifier {
 
     private static void verifyConfig(JSONObject configJson) throws Exception {
         // Vérifier la présence et le type des éléments spécifiques de CONFIG
-        if (!configJson.has("DATA_PATH") || !(configJson.get("DATA_PATH") instanceof String)) {
+        if (!configJson.has("PATH") || !(configJson.get("PATH") instanceof String)) {
             throw new Exception(
-                    "Le champ DATA_PATH est absent ou n'est pas de type String dans CONFIG du fichier setup.json");
+                    "Le champ DPATH est absent ou n'est pas de type String dans CONFIG du fichier setup.json");
         }
 
-        if (!configJson.has("FILE_PREFIX") || !(configJson.get("FILE_PREFIX") instanceof String)) {
+        if (!configJson.has("PREFIX") || !(configJson.get("PREFIX") instanceof String)) {
             throw new Exception(
-                    "Le champ FILE_PREFIX est absent ou n'est pas de type String dans CONFIG du fichier setup.json");
+                    "Le champ PREFIX est absent ou n'est pas de type String dans CONFIG du fichier setup.json");
         }
 
         if (!configJson.has("VERSION") || !(configJson.get("VERSION") instanceof String)) {

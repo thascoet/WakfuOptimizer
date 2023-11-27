@@ -1,7 +1,7 @@
 {
     "CONFIG": {
-        "DATA_PATH": "C:/Users/thasc/Documents/Wakfu_Opti/data/",
-        "FILE_PREFIX": "data_items_wakfu_",
+        "PATH": "./data/",
+        "PREFIX": "data_items_wakfu_",
         "VERSION": "last"
     },
     "CONTRAINTES": {
@@ -83,12 +83,12 @@
         "MAITRISE_ELEM": "0.5",
         "ESQUIVE": "0",
         "TACLE": "0",
-        "MAITRISE_CRITIQUE": "(/ TCC 100)",
+        "MAITRISE_CRITIQUE": "TCC/100",
         "RESISTANCE_CRITIQUE": "0",
         "MAITRISE_DOS": "0",
         "RESISTANCE_DOS": "0",
         "MAITRISE_MELEE": "0",
-        "MAITRISE_DISTANCE": "(- 1 (^ 0.5 (+ 1 PO)))",
+        "MAITRISE_DISTANCE": "1-0.5^(1+PO)",
         "MAITRISE_SOIN": "0",
         "MAITRISE_BERSERK": "0"
     }

@@ -8,8 +8,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
-
 import com.wakfu.equipment.Equipment;
 import com.wakfu.equipment.EquipmentParser;
 import com.wakfu.item.Item;
@@ -36,11 +34,13 @@ public class Main {
 
         if (version.equals("last")) version = Connect.getVersion();
 
-        String dataFilesPath = Setup.getInstance().getJSONObject("CONFIG").getString("PATH");
-        String dataFilesPrefix = Setup.getInstance().getJSONObject("CONFIG").getString("FILE_PREFIX");
+        String dataFilePath = Setup.getInstance().getJSONObject("CONFIG").getString("PATH");
+        String dataFilePrefix = Setup.getInstance().getJSONObject("CONFIG").getString("PREFIX");
 
-        if (!Files.exists(Paths.get(filePath))) {
+        String dataFile = dataFilePath + dataFilePrefix + version.replace(".", "_") + ".csv";
 
+        if (!Files.exists(Paths.get(dataFile))) {
+            
         }
     }
 
@@ -68,9 +68,9 @@ public class Main {
         List<Item> itemList = ItemParser.fromJson(itemsJsonString, equipmentMap);
 
         // Enregistrer les items au format CSV
-        String csvFilePath = "C:/Users/thasc/Documents/Wakfu_Opti/data";
+        String csvFilePath = "C:/Users/thasc/Documents/Wakfu_Opti/data/";
         String csvFileName = "data_items_wakfu_" + version.replace(".", "_") + ".csv";
-        ItemParser.toCsv(csvFilePath, csvFileName, itemList);
+        ItemParser.toCsv(csvFilePath + csvFileName, itemList);
     }
 
     public static void listFilesInCurrentDirectory() {

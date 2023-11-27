@@ -1,15 +1,21 @@
 package com.wakfu.item;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.wakfu.equipment.Equipment;
+import com.wakfu.equipment.EquipmentType;
 import com.wakfu.stats.Stat;
 import com.wakfu.stats.Stats;
 import com.wakfu.stats.StatsParser;
@@ -77,44 +83,88 @@ public class ItemParser {
     }
 
 
-    public static void toCsv(String filePath, String fileName, List<Item> itemList) {
-        String csvFile = filePath + "/" + fileName;
+    public static void toCsv(String filePath, List<Item> items) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            // Écrire la première ligne indiquant le séparateur utilisé
+            writer.write("sep=;\n");
 
-        try (FileWriter writer = new FileWriter(csvFile)) {
-            // Ajouter la première ligne avec les noms de colonnes et le séparateur
-            writer.append("sep=;");
-            writer.append(System.lineSeparator());
+            // Écrire la deuxième ligne avec le header
+            StringBuilder header = new StringBuilder("ID;NAME;LEVEL;RARITY;TYPE;SETID");
+            for (Stat stat : Stat.values()) {
+                header.append(";").append(stat.name());
+            }
+            writer.write(header.toString() + "\n");
 
-            writer.append("ID;NAME;LEVEL;RARITY;TYPE;SETID;PV;PA;PM;PW;RESISTANCE_ELEM;RESISTANCE_ELEM_1;RESISTANCE_ELEM_2;RESISTANCE_ELEM_3;RESISTANCE_EAU;RESISTANCE_AIR;RESISTANCE_SOL;RESISTANCE_FEU;MAITRISE_ELEM;MAITRISE_ELEM_1;MAITRISE_ELEM_2;MAITRISE_ELEM_3;MAITRISE_EAU;MAITRISE_AIR;MAITRISE_SOL;MAITRISE_FEU;TCC;PARADE;INITIATIVE;PO;ESQUIVE;TACLE;CONTROLE;MAITRISE_CRITIQUE;RESISTANCE_CRITIQUE;MAITRISE_DOS;RESISTANCE_DOS;MAITRISE_MELEE;MAITRISE_DISTANCE;MAITRISE_SOIN;MAITRISE_BERSERK");
-            writer.append(System.lineSeparator());
+            // Écrire les lignes de données
+            for (Item item : items) {
+                StringBuilder line = new StringBuilder();
+                line.append(item.getId()).append(";")
+                    .append(item.getName()).append(";")
+                    .append(item.getLevel()).append(";")
+                    .append(item.getRarity().name()).append(";")
+                    .append(item.getType().name()).append(";")
+                    .append(item.getSetId());
 
-            // Ajouter les données des items
-            for (Item item : itemList) {
-                writer.append(item.getId() + ";");
-                writer.append(item.getName() + ";");
-                writer.append(item.getLevel() + ";");
-                writer.append(item.getRarity().name() + ";");
-                writer.append(item.getType().name() + ";");
-                writer.append(item.getSetId() + ";");
-
-                // Ajouter les valeurs de la HashMap des Stats
+                // Ajouter les valeurs des statistiques
                 for (Stat stat : Stat.values()) {
-                    Integer value = item.getStats().get(stat);
-                    writer.append(value != null ? value.toString() : "0");
-
-                    // Ajouter un point-virgule sauf pour la dernière colonne
-                    if (stat != Stat.MAITRISE_BERSERK) {
-                        writer.append(";");
-                    }
+                    line.append(";").append(Objects.requireNonNullElse(item.getStats().get(stat), 0));
                 }
 
-                writer.append(System.lineSeparator());
+                writer.write(line.toString() + "\n");
             }
 
-            System.out.println("CSV file created successfully!");
-
+            System.out.println("Écriture du fichier CSV réussie : " + filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
+    public static List<Item> fromCsv(String filePath) {
+        List<Item> items = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            // Lire la première ligne (sep=;) pour ignorer le séparateur
+            reader.readLine();
+
+            // Lire la deuxième ligne (header) pour obtenir les noms des statistiques
+            String headerLine = reader.readLine();
+            String[] headerValues = headerLine.split(";");
+
+            // Lire chaque ligne du fichier CSV
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(";");
+
+                // Créer un nouvel objet Item
+                int id = Integer.parseInt(values[0]);
+                String name = values[1];
+                int level = Integer.parseInt(values[2]);
+                ItemRarity rarity = ItemRarity.valueOf(values[3]);
+                EquipmentType type = EquipmentType.valueOf(values[4]);
+                int setId = Integer.parseInt(values[5]);
+
+                // Remplir les statistiques de l'objet Item à partir du header
+                HashMap<Stat, Integer> statsHashMap = new HashMap<>();
+
+                for (int i = 6; i < values.length; i++) {
+
+                    Stat stat = Stat.valueOf(headerValues[i]);
+                    statsHashMap.put(stat, Integer.parseInt(values[i]));
+                }
+
+                Stats stats = new Stats(statsHashMap);
+
+                // Ajouter l'objet Item à la liste
+                items.add(new Item(id, name, level, rarity, type, setId, stats));
+            }
+
+            System.out.println("Lecture du fichier CSV réussie : " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return items;
+    }
+
 }
