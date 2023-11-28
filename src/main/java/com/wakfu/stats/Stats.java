@@ -8,10 +8,11 @@ public class Stats {
 
     // Constructeur prenant une HashMap en paramètre
     public Stats(Map<Stat, Integer> initialStats) {
-        
+
         this.statsMap = new HashMap<>();
 
-        // Remplir la statsMap avec les valeurs initiales, mettant 0 pour les clés manquantes
+        // Remplir la statsMap avec les valeurs initiales, mettant 0 pour les clés
+        // manquantes
         for (Stat stat : Stat.values()) {
             if (initialStats.containsKey(stat)) {
                 this.statsMap.put(stat, initialStats.get(stat));
@@ -19,6 +20,14 @@ public class Stats {
                 this.statsMap.put(stat, 0);
             }
         }
+    }
+
+    public Stats() {
+
+        this.statsMap = new HashMap<>();
+
+        for (Stat stat : Stat.values())
+            this.statsMap.put(stat, 0);
     }
 
     // Méthode pour obtenir la valeur d'une stat spécifique
@@ -30,12 +39,27 @@ public class Stats {
         return value;
     }
 
+    private void set(Stat stat, Integer value) {
+
+        statsMap.put(stat, value);
+    }
+
     // Méthode pour obtenir la HashMap complète
     public Map<Stat, Integer> getAll() {
         return statsMap;
     }
 
-    // Autres méthodes selon vos besoins...
+    public static Stats combineStats(Iterable<Stats> statsList) {
+
+        Stats combineStats = new Stats();
+
+        statsList.forEach((stats) -> {
+            for (Stat stat : Stat.values())
+                combineStats.set(stat, combineStats.get(stat) + stats.get(stat));
+        });
+
+        return combineStats;
+    }
 
     @Override
     public String toString() {
