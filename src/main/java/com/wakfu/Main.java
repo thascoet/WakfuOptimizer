@@ -5,14 +5,19 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.wakfu.equipment.Equipment;
 import com.wakfu.equipment.EquipmentParser;
+import com.wakfu.function.Analyser;
+import com.wakfu.function.Function;
 import com.wakfu.item.Item;
 import com.wakfu.item.ItemParser;
 import com.wakfu.setup.Setup;
+import com.wakfu.stats.Stat;
+import com.wakfu.stats.Stats;
 
 public class Main {
 
@@ -38,6 +43,17 @@ public class Main {
         String dataFilePrefix = Setup.getInstance().getJSONObject("CONFIG").getString("PREFIX");
 
         String dataFile = dataFilePath + dataFilePrefix + version.replace(".", "_") + ".csv";
+
+
+        Function function = Analyser.analyse("1-0.5^(1+PO)");
+
+        HashMap<Stat, Integer> variables = new HashMap<>();
+
+        variables.put(Stat.PO, 2);
+
+        Stats stats = new Stats(variables);
+
+        System.out.println(function.run(stats));
 
         if (!Files.exists(Paths.get(dataFile))) {
             
