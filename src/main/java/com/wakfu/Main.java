@@ -35,12 +35,12 @@ public class Main {
 
         Setup.init(setupJsonString);
 
-        String version = Setup.getInstance().getJSONObject("CONFIG").getString("VERSION");
+        String version = Setup.getInstance().getVersion();
 
         if (version.equals("last")) version = Connect.getVersion();
 
-        String dataFilePath = Setup.getInstance().getJSONObject("CONFIG").getString("PATH");
-        String dataFilePrefix = Setup.getInstance().getJSONObject("CONFIG").getString("PREFIX");
+        String dataFilePath = Setup.getInstance().getPath();
+        String dataFilePrefix = Setup.getInstance().getPrefix();
 
         String dataFile = dataFilePath + dataFilePrefix + version.replace(".", "_") + ".csv";
 
