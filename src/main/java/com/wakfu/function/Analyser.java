@@ -45,8 +45,9 @@ public class Analyser {
         int startingCount = count;
         boolean dot = true;
 
-        while (((functionString.charAt(count) >= 48) && functionString.charAt(count) <= 57)
-                || (dot && (functionString.charAt(count) == '.'))) {
+        while ((count < functionString.length())
+                && (((functionString.charAt(count) >= 48) && functionString.charAt(count) <= 57)
+                        || (dot && (functionString.charAt(count) == '.')))) {
             if (functionString.charAt(count) == '.')
                 dot = false;
             count++;
@@ -63,7 +64,8 @@ public class Analyser {
 
         int startingCount = count;
 
-        while ((functionString.charAt(count) >= 65) && (functionString.charAt(count) <= 90))
+        while ((count < functionString.length()) && (functionString.charAt(count) >= 65)
+                && (functionString.charAt(count) <= 90))
             count++;
 
         try {

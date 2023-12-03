@@ -44,6 +44,8 @@ public class Setup {
 
     private Set<ItemRarity> contrainteRaretesAutorisees;
 
+    private Set<Stat> contrainteStatsInterdites;
+
     private Map<EquipmentType, List<Integer>> contrainteEquipementsPredefinis;
 
     private Map<Stat, Integer> conditionStats;
@@ -74,6 +76,16 @@ public class Setup {
             this.contrainteRaretesAutorisees.add(itemRarity);
         }
 
+        JSONArray contrainteStatsInterditesJson = setupJson.getJSONObject("CONTRAINTES")
+                .getJSONArray("STATS_INTERDITES");
+        this.contrainteStatsInterdites = EnumSet.noneOf(Stat.class);
+
+        for (int i = 0; i < contrainteStatsInterditesJson.length(); i++) {
+
+            Stat stat = Stat.valueOf(contrainteStatsInterditesJson.getString(i));
+            this.contrainteStatsInterdites.add(stat);
+        }
+
         JSONObject contrainteEquipementsPredefinisJson = setupJson.getJSONObject("CONTRAINTES")
                 .getJSONObject("EQUIPEMENTS_PREDEFINIS");
         Iterator<String> contrainteEquipementsPredefinisJsonKeys = contrainteEquipementsPredefinisJson.keys();
@@ -93,7 +105,12 @@ public class Setup {
             this.contrainteEquipementsPredefinis.put(equipmentType, equipementsPredefinis);
         }
 
-        JSONObject conditionStatsJson = setupJson.getJSONObject("CONDTIONS").getJSONObject("STATS");
+        if (contrainteEquipementsPredefinis.get(EquipmentType.ANNEAU).size() == 1)
+            throw new Exception(
+                    "Merci de prédéfinir au minimum deux anneaux dans " +
+                            "CONTRAINTES.EQUIPEMENTS_PREDEFINIS.ANNEAU du fichier setup.json");
+
+        JSONObject conditionStatsJson = setupJson.getJSONObject("CONDITIONS").getJSONObject("STATS");
         Iterator<String> conditionStatsJsonKeys = conditionStatsJson.keys();
         this.conditionStats = new HashMap<>();
 
@@ -103,7 +120,7 @@ public class Setup {
             this.conditionStats.put(Stat.valueOf(key), conditionStatsJson.getInt(key));
         }
 
-        JSONObject conditionMaxParRareteJson = setupJson.getJSONObject("CONDTIONS").getJSONObject("MAX_PAR_RARETE");
+        JSONObject conditionMaxParRareteJson = setupJson.getJSONObject("CONDITIONS").getJSONObject("MAX_PAR_RARETE");
         Iterator<String> conditionMaxParRareteJsonKeys = conditionMaxParRareteJson.keys();
         this.conditionMaxParRarete = new HashMap<>();
 
@@ -159,6 +176,10 @@ public class Setup {
         return contrainteRaretesAutorisees;
     }
 
+    public Set<Stat> getContrainteStatsInterdites() {
+        return contrainteStatsInterdites;
+    }
+
     public Map<EquipmentType, List<Integer>> getContrainteEquipementsPredefinis() {
         return contrainteEquipementsPredefinis;
     }
@@ -174,5 +195,4 @@ public class Setup {
     public Map<Stat, Function> getPoids() {
         return poids;
     }
-
 }

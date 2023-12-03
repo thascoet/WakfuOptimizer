@@ -5,60 +5,57 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.wakfu.assortment.AssortmentBuilder;
 import com.wakfu.equipment.Equipment;
 import com.wakfu.equipment.EquipmentParser;
-import com.wakfu.function.Analyser;
-import com.wakfu.function.Function;
+import com.wakfu.equipment.EquipmentType;
 import com.wakfu.item.Item;
 import com.wakfu.item.ItemParser;
+import com.wakfu.item.ItemsActions;
 import com.wakfu.setup.Setup;
-import com.wakfu.stats.Stat;
-import com.wakfu.stats.Stats;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        
+
         String filePath = "setup.json";
 
         if (!Files.exists(Paths.get(filePath))) {
-            throw new IOException("Le fichier setup.json est absent du répertoire courant.");
+            throw new IOException("Le fichier setup.json est absent du répertoire courant");
         }
 
-        byte[] encoded = Files.readAllBytes(Paths.get(filePath));
+        byte[] encodedSetupJson = Files.readAllBytes(Paths.get(filePath));
 
-        String setupJsonString = new String(encoded, StandardCharsets.UTF_8);
+        String setupJsonString = new String(encodedSetupJson, StandardCharsets.UTF_8);
 
         Setup.init(setupJsonString);
 
         String version = Setup.getInstance().getVersion();
 
-        if (version.equals("last")) version = Connect.getVersion();
+        if (version.equals("last"))
+            version = Connect.getVersion();
 
         String dataFilePath = Setup.getInstance().getPath();
         String dataFilePrefix = Setup.getInstance().getPrefix();
 
         String dataFile = dataFilePath + dataFilePrefix + version.replace(".", "_") + ".csv";
 
-
-        Function function = Analyser.analyse("1-0.5^(1+PO)");
-
-        HashMap<Stat, Integer> variables = new HashMap<>();
-
-        variables.put(Stat.PO, 2);
-
-        Stats stats = new Stats(variables);
-
-        System.out.println(function.run(stats));
-
         if (!Files.exists(Paths.get(dataFile))) {
-            
-            
+
         }
+
+        Map<Integer, Item> itemsMap = ItemParser.fromCsv(dataFile);
+
+        List<Item> filteredItemsList = ItemsActions.filter(itemsMap);
+
+        Map<EquipmentType, List<Item>> groupByTypeItems = ItemsActions.groupByEquipmentType(filteredItemsList, itemsMap);
+
+        AssortmentBuilder assortmentBuilder = new AssortmentBuilder(groupByTypeItems);
+
+        System.out.println(assortmentBuilder);
     }
 
     public static void getItems() throws Exception {

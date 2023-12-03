@@ -2,17 +2,18 @@
     "CONFIG": {
         "PATH": "./data/",
         "PREFIX": "data_items_wakfu_",
-        "VERSION": "last"
+        "VERSION": "1.81.1.15"
     },
     "CONTRAINTES": {
-        "NIVEAU_MIN": 21,
-        "NIVEAU_MAX": 35,
-        "RARETES_AUTORISEES": [],
+        "NIVEAU_MIN": 111,
+        "NIVEAU_MAX": 125,
+        "RARETES_AUTORISEES": ["LEGENDAIRE", "RELIQUE"],
+        "STATS_INTERDITES": ["MAITRISE_MELEE", "MAITRISE_SOIN", "MAITRISE_BERSERK", "MAITRISE_DOS"],
         "EQUIPEMENTS_PREDEFINIS": {
             "CASQUE": [],
-            "AMULETTE": [],
+            "AMULETTE": [16034],
             "PLASTRON": [],
-            "ANNEAU": [],
+            "ANNEAU": [15959, 16040, 16044],
             "BOTTES": [],
             "CAPE": [],
             "EPAULETTES": [],
@@ -25,7 +26,7 @@
     "CONDITIONS": {
         "STATS": {
             "PV": 0,
-            "PA": 0,
+            "PA": 3,
             "PM": 0,
             "PW": 0,
             "RESISTANCE_ELEM": 0,

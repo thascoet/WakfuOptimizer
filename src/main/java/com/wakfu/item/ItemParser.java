@@ -120,8 +120,8 @@ public class ItemParser {
     }
 
 
-    public static List<Item> fromCsv(String filePath) {
-        List<Item> items = new ArrayList<>();
+    public static Map<Integer, Item> fromCsv(String filePath) {
+        Map<Integer, Item> items = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             // Lire la première ligne (sep=;) pour ignorer le séparateur
@@ -156,7 +156,7 @@ public class ItemParser {
                 Stats stats = new Stats(statsHashMap);
 
                 // Ajouter l'objet Item à la liste
-                items.add(new Item(id, name, level, rarity, type, setId, stats));
+                items.put(id, new Item(id, name, level, rarity, type, setId, stats));
             }
 
             System.out.println("Lecture du fichier CSV réussie : " + filePath);

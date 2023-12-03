@@ -63,6 +63,13 @@ public class Stats {
 
     @Override
     public String toString() {
-        return "Stats" + statsMap;
+
+        Map<Stat, Integer> notNullStatsMap = new HashMap<>();
+
+        statsMap.forEach((stat, value) -> {
+            if (value != 0) notNullStatsMap.put(stat, value);
+        });
+
+        return "Stats" + notNullStatsMap;
     }
 }

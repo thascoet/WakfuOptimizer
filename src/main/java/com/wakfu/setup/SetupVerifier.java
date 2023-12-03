@@ -75,11 +75,18 @@ public class SetupVerifier {
                     "Le champ NIVEAU_MAX est absent ou n'est pas de type Integer dans CONFIG.CONTRAINTES du fichier setup.json");
         }
 
-        // Vérifier la présence et le type de RARETE_ALLOWED
+        // Vérifier la présence et le type de RARETES_AUTORISEES
         if (!contraintesJson.has("RARETES_AUTORISEES")
                 || !(contraintesJson.get("RARETES_AUTORISEES") instanceof JSONArray)) {
             throw new Exception(
                     "Le champ RARETES_AUTORISEES est absent ou n'est pas de type JsonArray dans CONFIG.CONTRAINTES du fichier setup.json");
+        }
+
+        // Vérifier la présence et le type de STATS_INTERDITES
+        if (!contraintesJson.has("STATS_INTERDITES")
+                || !(contraintesJson.get("STATS_INTERDITES") instanceof JSONArray)) {
+            throw new Exception(
+                    "Le champ STATS_INTERDITES est absent ou n'est pas de type JsonArray dans CONFIG.CONTRAINTES du fichier setup.json");
         }
 
         // Vérifier la présence et le type de EQUIPEMENTS_PREDEFINIS
@@ -90,6 +97,7 @@ public class SetupVerifier {
         }
 
         verifyRaretesAutorisees(contraintesJson.getJSONArray("RARETES_AUTORISEES"));
+        verifyStatsInterdites(contraintesJson.getJSONArray("STATS_INTERDITES"));
         verifyEquipementsPredefinis(contraintesJson.getJSONObject("EQUIPEMENTS_PREDEFINIS"));
     }
 
@@ -111,6 +119,28 @@ public class SetupVerifier {
 
                 throw new Exception("Le champ " + i
                         + " n'est pas une valeur de ItemRarity valide dans CONFIG.CONTRAINTES.RARETES_AUTORISEES du fichier setup.json");
+            }
+        }
+    }
+
+    private static void verifyStatsInterdites(JSONArray statsInterditesJson) throws Exception {
+
+        for (int i = 0; i < statsInterditesJson.length(); i++) {
+
+            if (!(statsInterditesJson.get(i) instanceof String)) {
+                throw new Exception(
+                        "Le champ " + i
+                                + " n'est pas de type STRING dans CONFIG.CONTRAINTES.STATS_INTERDITES du fichier setup.json");
+            }
+
+            try {
+
+                Stat.valueOf(statsInterditesJson.getString(i));
+
+            } catch (IllegalArgumentException e) {
+
+                throw new Exception("Le champ " + i
+                        + " n'est pas une valeur de Stat valide dans CONFIG.CONTRAINTES.STATS_INTERDITES du fichier setup.json");
             }
         }
     }
