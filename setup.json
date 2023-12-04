@@ -5,15 +5,15 @@
         "VERSION": "1.81.1.15"
     },
     "CONTRAINTES": {
-        "NIVEAU_MIN": 111,
-        "NIVEAU_MAX": 125,
+        "NIVEAU_MIN": 141,
+        "NIVEAU_MAX": 155,
         "RARETES_AUTORISEES": ["LEGENDAIRE", "RELIQUE"],
         "STATS_INTERDITES": ["MAITRISE_MELEE", "MAITRISE_SOIN", "MAITRISE_BERSERK", "MAITRISE_DOS"],
         "EQUIPEMENTS_PREDEFINIS": {
             "CASQUE": [],
-            "AMULETTE": [16034],
+            "AMULETTE": [],
             "PLASTRON": [],
-            "ANNEAU": [15959, 16040, 16044],
+            "ANNEAU": [],
             "BOTTES": [],
             "CAPE": [],
             "EPAULETTES": [],

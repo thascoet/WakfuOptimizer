@@ -22,70 +22,67 @@ public class AssortmentBuilder implements Iterator<Assortment> {
             EquipmentType.ARME_PRINCIPALE
     };
 
-    private Map<EquipmentType, List<Item>> groupByItemsMap;
-
-    private Map<EquipmentType, Long> sizes;
-    private Map<EquipmentType, Long> accumulatedSizes;
-
-    private long count;
-    private long maxValue;
+    private long[] sizes;
+    private long[] count;
+    private boolean hasNext;
 
     public AssortmentBuilder(Map<EquipmentType, List<Item>> groupByItemsMap) {
 
-        this.groupByItemsMap = groupByItemsMap;
-
-        this.sizes = new HashMap<>();
-
-        for (int i = 0; i < EquipmentType.values().length; i++) {
-
-            EquipmentType equipmentType = EquipmentType.values()[i];
-
-            this.sizes.put(equipmentType, (long) groupByItemsMap.get(equipmentType).size());
-        }
-
-        this.accumulatedSizes = new HashMap<>();
-
-        long acc = 1;
+        this.sizes = new long[EQUIPMENT_ORDER.length];
+        this.count = new long[EQUIPMENT_ORDER.length];
 
         for (int i = 0; i < EQUIPMENT_ORDER.length; i++) {
 
             EquipmentType equipmentType = EQUIPMENT_ORDER[i];
 
-            long size = this.sizes.get(equipmentType);
+            long size = (long) groupByItemsMap.get(equipmentType).size();
 
             if (equipmentType == EquipmentType.ANNEAU)
                 size = size * (size - 1) / 2;
 
-            if (equipmentType == EquipmentType.ARME_PRINCIPALE)
-                size = size * this.sizes.get(EquipmentType.ARME_SECONDAIRE)
-                        + this.sizes.get(EquipmentType.ARME_A_DEUX_MAINS);
+            else if (equipmentType == EquipmentType.ARME_PRINCIPALE)
+                size = size * (long) groupByItemsMap.get(EquipmentType.ARME_SECONDAIRE).size()
+                        + (long) groupByItemsMap.get(EquipmentType.ARME_A_DEUX_MAINS).size();
 
-            acc *= size;
-
-            this.sizes.put(equipmentType, size);
-            this.accumulatedSizes.put(equipmentType, acc);
+            this.sizes[i] = size;
+            this.count[i] = 0;
+            this.hasNext = true;
         }
 
-        this.count = 0;
-        this.maxValue = this.accumulatedSizes.get(EquipmentType.ARME_PRINCIPALE);
+        for (int i=0; i<EQUIPMENT_ORDER.length; i++) {
+            System.out.println(this.sizes[i]);
+            System.out.println(this.count[i]);
+        }
+    }
+
+    private void incrementCount() {
+
+        int i = 0;
+
+        do {
+            this.count[i]++;
+            if (this.count[i] < this.sizes[i]) return;
+            this.count[i] = 0;
+            i++;
+        } while (EQUIPMENT_ORDER.length-i!=0);
+
+        this.hasNext = false;
     }
 
     @Override
     public String toString() {
-        return "AssortmentBuilder [sizes=" + sizes + ", accumulatedSizes="
-                + accumulatedSizes + "]";
+        return "AssortmentBuilder [sizes=" + sizes + "]";
     }
 
     @Override
     public boolean hasNext() {
-
-        return count < maxValue;
+        return hasNext;
     }
 
     @Override
     public Assortment next() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'next'");
-    }
 
+        incrementCount();
+        return null;
+    }
 }

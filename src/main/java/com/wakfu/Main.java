@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.wakfu.assortment.Assortment;
 import com.wakfu.assortment.AssortmentBuilder;
 import com.wakfu.equipment.Equipment;
 import com.wakfu.equipment.EquipmentParser;
@@ -53,9 +55,9 @@ public class Main {
 
         Map<EquipmentType, List<Item>> groupByTypeItems = ItemsActions.groupByEquipmentType(filteredItemsList, itemsMap);
 
-        AssortmentBuilder assortmentBuilder = new AssortmentBuilder(groupByTypeItems);
+        Iterator<Assortment> assortmentBuilder = new AssortmentBuilder(groupByTypeItems);
 
-        System.out.println(assortmentBuilder);
+        while (assortmentBuilder.hasNext()) assortmentBuilder.next();
     }
 
     public static void getItems() throws Exception {
