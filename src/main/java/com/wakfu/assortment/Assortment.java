@@ -48,45 +48,42 @@ public class Assortment {
     private Item armePrincipale;
     private Item armeSecondaire;
 
-    private Stats stats;
-
-    public Assortment(List<Item> items) {
+    public Assortment(Item[] items) {
 
         validateItemsList(items);
 
-        this.casque = items.get(0);
-        this.amulette = items.get(1);
-        this.plastron = items.get(2);
-        this.anneau1 = items.get(3);
-        this.anneau2 = items.get(4);
-        this.bottes = items.get(5);
-        this.cape = items.get(6);
-        this.epaulettes = items.get(7);
-        this.ceinture = items.get(8);
-        this.armePrincipale = items.get(9);
-        this.armeSecondaire = items.size() == 11 ? items.get(10) : null;
-
-        this.stats = Stats.combineStats(items.stream().map((item) -> item.getStats()).toList());
+        this.casque = items[0];
+        this.amulette = items[1];
+        this.plastron = items[2];
+        this.anneau1 = items[3];
+        this.anneau2 = items[4];
+        this.bottes = items[5];
+        this.cape = items[6];
+        this.epaulettes = items[7];
+        this.ceinture = items[8];
+        this.armePrincipale = items[9];
+        this.armeSecondaire = items.length == 11 ? items[10] : null;
     }
 
-    private void validateItemsList(List<Item> equipmentsList) {
+    private void validateItemsList(Item[] equipmentsList) {
 
         // Vérifier si la liste respecte le schéma 1 ou le schéma 2
-        boolean isValidOrder1 = validateEquipmentsTypeOrder(equipmentsList, EQUIPMENT_DEFINE_ORDER_1);
-        boolean isValidOrder2 = validateEquipmentsTypeOrder(equipmentsList, EQUIPMENT_DEFINE_ORDER_2);
+        if (validateEquipmentsTypeOrder(equipmentsList, EQUIPMENT_DEFINE_ORDER_1))
+            return;
+        if (validateEquipmentsTypeOrder(equipmentsList, EQUIPMENT_DEFINE_ORDER_2))
+            return;
 
-        if (!isValidOrder1 && !isValidOrder2) {
-            throw new IllegalArgumentException("La liste d'équipements ne respecte aucun des schémas spécifiés.");
-        }
+        throw new IllegalArgumentException("La liste d'équipements ne respecte aucun des schémas spécifiés.");
+
     }
 
-    private boolean validateEquipmentsTypeOrder(List<Item> equipmentList, EquipmentType[] order) {
+    private boolean validateEquipmentsTypeOrder(Item[] equipmentList, EquipmentType[] order) {
 
-        if (equipmentList.size() != order.length)
+        if (equipmentList.length != order.length)
             return false;
 
         for (int i = 0; i < order.length; i++)
-            if (order[i] != equipmentList.get(i).getType())
+            if (order[i] != equipmentList[i].getType())
                 return false;
 
         return true;
@@ -142,9 +139,5 @@ public class Assortment {
 
     public Item getArmeSecondaire() {
         return armeSecondaire;
-    }
-
-    public Stats getStats() {
-        return stats;
     }
 }
