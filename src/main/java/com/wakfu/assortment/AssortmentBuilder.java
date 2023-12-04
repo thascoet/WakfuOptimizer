@@ -31,7 +31,7 @@ public class AssortmentBuilder implements Iterator<Assortment> {
     private boolean hasNext;
 
     private final int armesADeuxMainsNumber;
-    private final int armesPrincipalesNumber;
+    private final int armesSecondairesNumber;
     private final int anneauxNumber;
     private int[] anneauFirst;
     private int[] anneauSecond;
@@ -63,7 +63,7 @@ public class AssortmentBuilder implements Iterator<Assortment> {
 
         this.anneauxNumber = groupByItemsMap.get(EquipmentType.ANNEAU).size();
         this.armesADeuxMainsNumber = groupByItemsMap.get(EquipmentType.ARME_A_DEUX_MAINS).size();
-        this.armesPrincipalesNumber = groupByItemsMap.get(EquipmentType.ARME_PRINCIPALE).size();
+        this.armesSecondairesNumber = groupByItemsMap.get(EquipmentType.ARME_SECONDAIRE).size();
 
         this.anneauFirst = new int[this.sizes[3]];
         this.anneauSecond = new int[this.sizes[3]];
@@ -83,6 +83,7 @@ public class AssortmentBuilder implements Iterator<Assortment> {
         int i = 0;
 
         do {
+            if (i >= 7) System.out.println("ok " + i + " : " + (counts[i]+1) + "/" + sizes[i]);
             this.counts[i]++;
             if (this.counts[i] < this.sizes[i])
                 return;
@@ -114,9 +115,9 @@ public class AssortmentBuilder implements Iterator<Assortment> {
 
         } else {
 
-            int currentIndex = this.counts[EQUIPMENT_ORDER_LENGTH-1] - this.armesADeuxMainsNumber;
-            int armePrincipaleIndex = currentIndex / this.armesPrincipalesNumber;
-            int armeSecondaireIndex = currentIndex % this.armesPrincipalesNumber;
+            int currentIndex = this.counts[8] - this.armesADeuxMainsNumber;
+            int armePrincipaleIndex = currentIndex / this.armesSecondairesNumber;
+            int armeSecondaireIndex = currentIndex % this.armesSecondairesNumber;
 
             Item[] items = {
                     groupByItemsMap.get(EquipmentType.CASQUE).get(this.counts[0]),
