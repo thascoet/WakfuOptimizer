@@ -1,6 +1,7 @@
 package com.wakfu.item;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class ItemsActions {
 
     public static Map<EquipmentType, List<Item>> groupByEquipmentType(List<Item> itemsList, Map<Integer, Item> itemsMap) throws Exception {
 
-        HashMap<EquipmentType, List<Item>> groupByEquipmentTypeItemsMap = new HashMap<>();
+        Map<EquipmentType, List<Item>> groupByEquipmentTypeItemsMap = new EnumMap<>(EquipmentType.class);
 
         for (int i = 0; i < EquipmentType.values().length; i++) {
 

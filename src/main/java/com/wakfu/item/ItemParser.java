@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +83,6 @@ public class ItemParser {
         return itemList;
     }
 
-
     public static void toCsv(String filePath, List<Item> items) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             // Écrire la première ligne indiquant le séparateur utilisé
@@ -99,11 +99,11 @@ public class ItemParser {
             for (Item item : items) {
                 StringBuilder line = new StringBuilder();
                 line.append(item.getId()).append(";")
-                    .append(item.getName()).append(";")
-                    .append(item.getLevel()).append(";")
-                    .append(item.getRarity().name()).append(";")
-                    .append(item.getType().name()).append(";")
-                    .append(item.getSetId());
+                        .append(item.getName()).append(";")
+                        .append(item.getLevel()).append(";")
+                        .append(item.getRarity().name()).append(";")
+                        .append(item.getType().name()).append(";")
+                        .append(item.getSetId());
 
                 // Ajouter les valeurs des statistiques
                 for (Stat stat : Stat.values()) {
@@ -118,7 +118,6 @@ public class ItemParser {
             e.printStackTrace();
         }
     }
-
 
     public static Map<Integer, Item> fromCsv(String filePath) {
         Map<Integer, Item> items = new HashMap<>();
@@ -145,7 +144,7 @@ public class ItemParser {
                 int setId = Integer.parseInt(values[5]);
 
                 // Remplir les statistiques de l'objet Item à partir du header
-                HashMap<Stat, Integer> statsHashMap = new HashMap<>();
+                Map<Stat, Integer> statsHashMap = new EnumMap<>(Stat.class);
 
                 for (int i = 6; i < values.length; i++) {
 
@@ -153,7 +152,12 @@ public class ItemParser {
                     statsHashMap.put(stat, Integer.parseInt(values[i]));
                 }
 
-                Stats stats = new Stats(statsHashMap);
+                int[] statArray = new int[Stat.values().length];
+
+                for (int i = 0; i < Stat.values().length; i++)
+                    statArray[i] = statsHashMap.get(Stat.values()[i]);
+
+                Stats stats = new Stats(statArray);
 
                 // Ajouter l'objet Item à la liste
                 items.put(id, new Item(id, name, level, rarity, type, setId, stats));

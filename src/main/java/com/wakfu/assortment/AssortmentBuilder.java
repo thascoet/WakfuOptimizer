@@ -1,6 +1,5 @@
 package com.wakfu.assortment;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +35,8 @@ public class AssortmentBuilder implements Iterator<Assortment> {
     private int[] anneauFirst;
     private int[] anneauSecond;
 
+    private long timer;
+
     public AssortmentBuilder(Map<EquipmentType, List<Item>> groupByItemsMap) {
 
         this.groupByItemsMap = groupByItemsMap;
@@ -68,6 +69,8 @@ public class AssortmentBuilder implements Iterator<Assortment> {
         this.anneauFirst = new int[this.sizes[3]];
         this.anneauSecond = new int[this.sizes[3]];
 
+        this.timer = System.currentTimeMillis();
+
         int cpt = 0;
 
         for (int i = 0; i < this.anneauxNumber - 1; i++)
@@ -76,6 +79,15 @@ public class AssortmentBuilder implements Iterator<Assortment> {
                 this.anneauSecond[cpt] = j;
                 cpt++;
             }
+
+        long acc = 1;
+
+        for (int i = 0; i < this.sizes.length; i++) {
+            System.out.print(this.sizes[i] + " ");
+            acc *= (long) sizes[i];
+        }
+
+        System.out.println(acc);
     }
 
     private void incrementCount() {
@@ -83,7 +95,12 @@ public class AssortmentBuilder implements Iterator<Assortment> {
         int i = 0;
 
         do {
-            if (i >= 7) System.out.println("ok " + i + " : " + (counts[i]+1) + "/" + sizes[i]);
+            if (i >= 7) {
+                long t = System.currentTimeMillis() - this.timer;
+                this.timer = System.currentTimeMillis();
+                System.out.println("ok " + i + " : " + (counts[i] + 1) + "/" + sizes[i] + "   " + t + "ms");
+            }
+            ;
             this.counts[i]++;
             if (this.counts[i] < this.sizes[i])
                 return;

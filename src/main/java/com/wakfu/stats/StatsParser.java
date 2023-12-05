@@ -1,6 +1,7 @@
 package com.wakfu.stats;
 
-import java.util.HashMap;
+import java.util.EnumMap;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,7 +11,7 @@ public class StatsParser {
     // Méthode statique pour créer une instance de Stats à partir d'un objet JSON
     public static Stats fromJson(JSONArray effectsArray) {
 
-        HashMap<Stat, Integer> statsMap = new HashMap<>();
+        Map<Stat, Integer> statsMap = new EnumMap<>(Stat.class);
         for (Stat stat : Stat.values()) {
             statsMap.put(stat, 0);
         }
@@ -221,6 +222,10 @@ public class StatsParser {
             }
         }
 
-        return new Stats(statsMap);
+        int[] statArray = new int[Stat.values().length];
+
+        for (int i=0; i<Stat.values().length; i++) statArray[i] = statsMap.get(Stat.values()[i]);
+
+        return new Stats(statArray);
     }
 }

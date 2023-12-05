@@ -1,6 +1,7 @@
 package com.wakfu.setup;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 import com.wakfu.equipment.EquipmentType;
 import com.wakfu.function.Analyser;
 import com.wakfu.function.Function;
+import com.wakfu.function.otherOperators.Constant;
 import com.wakfu.item.ItemRarity;
 import com.wakfu.stats.Stat;
 
@@ -89,7 +91,7 @@ public class Setup {
         JSONObject contrainteEquipementsPredefinisJson = setupJson.getJSONObject("CONTRAINTES")
                 .getJSONObject("EQUIPEMENTS_PREDEFINIS");
         Iterator<String> contrainteEquipementsPredefinisJsonKeys = contrainteEquipementsPredefinisJson.keys();
-        this.contrainteEquipementsPredefinis = new HashMap<>();
+        this.contrainteEquipementsPredefinis = new EnumMap<>(EquipmentType.class);
 
         while (contrainteEquipementsPredefinisJsonKeys.hasNext()) {
 
@@ -112,7 +114,9 @@ public class Setup {
 
         JSONObject conditionStatsJson = setupJson.getJSONObject("CONDITIONS").getJSONObject("STATS");
         Iterator<String> conditionStatsJsonKeys = conditionStatsJson.keys();
-        this.conditionStats = new HashMap<>();
+        this.conditionStats = new EnumMap<>(Stat.class);
+
+        for (Stat stat : Stat.values()) this.conditionStats.put(stat, 0);
 
         while (conditionStatsJsonKeys.hasNext()) {
 
@@ -122,7 +126,9 @@ public class Setup {
 
         JSONObject conditionMaxParRareteJson = setupJson.getJSONObject("CONDITIONS").getJSONObject("MAX_PAR_RARETE");
         Iterator<String> conditionMaxParRareteJsonKeys = conditionMaxParRareteJson.keys();
-        this.conditionMaxParRarete = new HashMap<>();
+        this.conditionMaxParRarete = new EnumMap<>(ItemRarity.class);
+
+        for (ItemRarity itemRarity : ItemRarity.values()) this.conditionMaxParRarete.put(itemRarity, -1);
 
         while (conditionMaxParRareteJsonKeys.hasNext()) {
 
@@ -132,7 +138,11 @@ public class Setup {
 
         JSONObject poidsJson = setupJson.getJSONObject("POIDS");
         Iterator<String> poidsJsonKeys = poidsJson.keys();
-        this.poids = new HashMap<>();
+        this.poids = new EnumMap<>(Stat.class);
+
+        for (Stat stat : Stat.values()) {
+            this.poids.put(stat, new Constant(0));
+        }
 
         while (poidsJsonKeys.hasNext()) {
 

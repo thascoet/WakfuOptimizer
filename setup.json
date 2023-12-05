@@ -26,7 +26,7 @@
     "CONDITIONS": {
         "STATS": {
             "PV": 0,
-            "PA": 3,
+            "PA": 0,
             "PM": 0,
             "PW": 0,
             "RESISTANCE_ELEM": 0,
@@ -73,24 +73,21 @@
         }
     },
     "POIDS": {
-        "PV": "0",
-        "RESISTANCE_EAU": "0",
-        "RESISTANCE_AIR": "0",
-        "RESISTANCE_SOL": "0",
-        "RESISTANCE_FEU": "0",
+        "PV": "0.3",
+        "RESISTANCE_EAU": "0.2",
+        "RESISTANCE_AIR": "0.2",
+        "RESISTANCE_SOL": "0.2",
+        "RESISTANCE_FEU": "0.2",
+        "RESISTANCE_ELEM_1": "0.1",
+        "RESISTANCE_ELEM_2": "0.15",
+        "RESISTANCE_ELEM_3": "0.2",
+        "RESISTANCE_ELEM": "0.25",
         "MAITRISE_ELEM_1": "0.75",
         "MAITRISE_ELEM_2": "1",
         "MAITRISE_ELEM_3": "0.75",
         "MAITRISE_ELEM": "0.5",
-        "ESQUIVE": "0",
-        "TACLE": "0",
+        "ESQUIVE": "0.5",
         "MAITRISE_CRITIQUE": "TCC/100",
-        "RESISTANCE_CRITIQUE": "0",
-        "MAITRISE_DOS": "0",
-        "RESISTANCE_DOS": "0",
-        "MAITRISE_MELEE": "0",
-        "MAITRISE_DISTANCE": "1-0.5^(1+PO)",
-        "MAITRISE_SOIN": "0",
-        "MAITRISE_BERSERK": "0"
+        "MAITRISE_DISTANCE": "1-0.5^(1+PO)"
     }
 }

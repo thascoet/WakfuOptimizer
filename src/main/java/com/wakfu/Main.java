@@ -8,16 +8,20 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.wakfu.assortment.Assortment;
 import com.wakfu.assortment.AssortmentBuilder;
 import com.wakfu.equipment.Equipment;
 import com.wakfu.equipment.EquipmentParser;
 import com.wakfu.equipment.EquipmentType;
+import com.wakfu.function.Function;
 import com.wakfu.item.Item;
 import com.wakfu.item.ItemParser;
 import com.wakfu.item.ItemsActions;
 import com.wakfu.setup.Setup;
+import com.wakfu.stats.Stat;
+import com.wakfu.stats.Stats;
 
 public class Main {
 
@@ -53,11 +57,43 @@ public class Main {
 
         List<Item> filteredItemsList = ItemsActions.filter(itemsMap);
 
-        Map<EquipmentType, List<Item>> groupByTypeItems = ItemsActions.groupByEquipmentType(filteredItemsList, itemsMap);
+        Map<EquipmentType, List<Item>> groupByTypeItems = ItemsActions.groupByEquipmentType(filteredItemsList,
+                itemsMap);
 
         Iterator<Assortment> assortmentBuilder = new AssortmentBuilder(groupByTypeItems);
 
-        while (assortmentBuilder.hasNext()) assortmentBuilder.next();
+        Assortment.init();
+
+        /*
+        Function f = Setup.getInstance().getPoids().get(Stat.MAITRISE_ELEM);
+
+        Random random = new Random();
+
+        long acc = 0;
+        int max = 1000000;
+
+        for (int i=0; i<max; i++) {
+
+            int[] statsInt = new int[Stat.values().length];
+            for (int j=0; j<Stat.values().length; j++) statsInt[j] = random.nextInt();
+            Stats stats = new Stats(statsInt);
+
+            long timer = System.nanoTime();
+            double a = 1.-Math.pow(0.5,(1.+ (double) statsInt[23]));
+            acc += System.nanoTime()-timer;
+        }
+
+        System.out.println("temps moyen : " + ((double) acc/max) + "ns");
+        */
+
+         
+        while (assortmentBuilder.hasNext()) {
+            Assortment assortment = assortmentBuilder.next();
+            assortment.build();
+            if (assortment.matchConditions()) {
+                //assortment.getPoid();
+            }
+        }
     }
 
     public static void getItems() throws Exception {

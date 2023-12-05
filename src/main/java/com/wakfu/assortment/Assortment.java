@@ -1,10 +1,14 @@
 package com.wakfu.assortment;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 
 import com.wakfu.equipment.EquipmentType;
+import com.wakfu.function.Function;
 import com.wakfu.item.Item;
+import com.wakfu.item.ItemRarity;
+import com.wakfu.setup.Setup;
+import com.wakfu.stats.Stat;
 import com.wakfu.stats.Stats;
 
 public class Assortment {
@@ -36,45 +40,89 @@ public class Assortment {
             EquipmentType.ARME_SECONDAIRE
     };
 
-    private Item casque;
-    private Item amulette;
-    private Item plastron;
-    private Item anneau1;
-    private Item anneau2;
-    private Item bottes;
-    private Item cape;
-    private Item epaulettes;
-    private Item ceinture;
-    private Item armePrincipale;
-    private Item armeSecondaire;
+    private static Map<Stat, Integer> conditionStats;
+    private static Map<ItemRarity, Integer> conditionMaxParRarete;
+    private static Map<Stat, Function> poids;
+
+    private Item[] items;
+
+    private int[] itemsRarity;
+
+    private Stats stats;
+
+    private boolean oneWeaponAssortment;
+
+    public static void init() {
+
+        conditionStats = Setup.getInstance().getConditionStats();
+
+        conditionMaxParRarete = Setup.getInstance().getConditionMaxParRarete();
+
+        poids = Setup.getInstance().getPoids();
+    }
 
     public Assortment(Item[] items) {
 
-        validateItemsList(items);
+        this.oneWeaponAssortment = validateItemsList(items);
 
-        this.casque = items[0];
-        this.amulette = items[1];
-        this.plastron = items[2];
-        this.anneau1 = items[3];
-        this.anneau2 = items[4];
-        this.bottes = items[5];
-        this.cape = items[6];
-        this.epaulettes = items[7];
-        this.ceinture = items[8];
-        this.armePrincipale = items[9];
-        this.armeSecondaire = items.length == 11 ? items[10] : null;
+        this.items = items;
     }
 
-    private void validateItemsList(Item[] equipmentsList) {
+    public void build() {
+
+        int[] statsArray = new int[Stat.values().length];
+        Arrays.fill(statsArray, 0);
+
+        int[] itemsRarity = new int[ItemRarity.values().length];
+        Arrays.fill(itemsRarity, 0);
+
+        for (int i = 0; i < items.length; i++) {
+            for (int j = 0; j < Stat.values().length; j++) {
+                statsArray[j] += items[i].getStats().getAll()[j];
+            }
+            itemsRarity[items[i].getRarity().ordinal()]++;
+        }
+
+        this.stats = new Stats(statsArray);
+        this.itemsRarity = itemsRarity;
+    }
+
+    public boolean matchConditions() {
+        
+        for (int i = 0; i < ItemRarity.values().length; i++) {
+            if (conditionMaxParRarete.get(ItemRarity.values()[i]) >= 0
+                    && itemsRarity[i] >= conditionMaxParRarete.get(ItemRarity.values()[i]))
+                return false;
+        }
+
+        for (int i = 0; i < Stat.values().length; i++) {
+            if (stats.getAll()[i] < conditionStats.get(Stat.values()[i]))
+                return false;
+        }
+
+        return true;
+    }
+
+    public double getPoid() {
+
+        double poid = 0;
+
+        for (int i = 0; i < Stat.values().length; i++) {
+            poid += this.stats.getAll()[i] * poids.get(Stat.values()[i]).run(this.stats);
+        }
+
+        return poid;
+    }
+
+    private boolean validateItemsList(Item[] equipmentsList) {
 
         // Vérifier si la liste respecte le schéma 1 ou le schéma 2
         if (validateEquipmentsTypeOrder(equipmentsList, EQUIPMENT_DEFINE_ORDER_1))
-            return;
+            return true;
         if (validateEquipmentsTypeOrder(equipmentsList, EQUIPMENT_DEFINE_ORDER_2))
-            return;
+            return false;
 
         throw new IllegalArgumentException("La liste d'équipements ne respecte aucun des schémas spécifiés.");
-
     }
 
     private boolean validateEquipmentsTypeOrder(Item[] equipmentList, EquipmentType[] order) {
@@ -89,55 +137,7 @@ public class Assortment {
         return true;
     }
 
-    // Getter pour récupérer une liste d'équipements
-    public List<Item> getEquipmentsList() {
-        return Arrays.asList(
-                casque, amulette, plastron, anneau1, anneau2,
-                bottes, cape, epaulettes, ceinture,
-                armePrincipale, armeSecondaire);
-    }
-
-    public Item getCasque() {
-        return casque;
-    }
-
-    public Item getAmulette() {
-        return amulette;
-    }
-
-    public Item getPlastron() {
-        return plastron;
-    }
-
-    public Item getAnneau1() {
-        return anneau1;
-    }
-
-    public Item getAnneau2() {
-        return anneau2;
-    }
-
-    public Item getBottes() {
-        return bottes;
-    }
-
-    public Item getCape() {
-        return cape;
-    }
-
-    public Item getEpaulettes() {
-        return epaulettes;
-    }
-
-    public Item getCeinture() {
-        return ceinture;
-    }
-
-    public Item getArmePrincipale() {
-        return armePrincipale;
-    }
-
-    public Item getArmeSecondaire() {
-        return armeSecondaire;
+    public boolean isOneWeaponAssortment() {
+        return oneWeaponAssortment;
     }
 }

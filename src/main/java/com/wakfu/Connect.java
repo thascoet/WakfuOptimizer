@@ -3,6 +3,7 @@ package com.wakfu;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 
 import org.json.JSONObject;
@@ -12,7 +13,8 @@ public class Connect {
     private static String baseURL = "https://wakfu.cdn.ankama.com/gamedata/";
     
     public static String sendHttpRequest(String urlString) throws Exception {
-        URL url = new URL(baseURL + urlString);
+
+        URL url = (new URI(baseURL + urlString)).toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         // Définir la méthode de la requête
