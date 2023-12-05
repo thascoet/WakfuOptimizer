@@ -90,9 +90,8 @@ public class Main {
         while (assortmentBuilder.hasNext()) {
             Assortment assortment = assortmentBuilder.next();
             assortment.build();
-            if (assortment.matchConditions()) {
-                //assortment.getPoid();
-            }
+            assortment.matchConditions();
+            assortment.getPoid();
         }
     }
 

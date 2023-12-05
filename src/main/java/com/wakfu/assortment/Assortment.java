@@ -88,16 +88,22 @@ public class Assortment {
     }
 
     public boolean matchConditions() {
-        
-        for (int i = 0; i < ItemRarity.values().length; i++) {
-            if (conditionMaxParRarete.get(ItemRarity.values()[i]) >= 0
-                    && itemsRarity[i] >= conditionMaxParRarete.get(ItemRarity.values()[i]))
-                return false;
-        }
 
-        for (int i = 0; i < Stat.values().length; i++) {
-            if (stats.getAll()[i] < conditionStats.get(Stat.values()[i]))
+        int i = 0;
+        
+        for (ItemRarity itemRarity: ItemRarity.values()) {
+            if (conditionMaxParRarete.get(itemRarity) >= 0
+                    && itemsRarity[i] >= conditionMaxParRarete.get(itemRarity))
                 return false;
+            i++;
+        }
+    
+        i=0;
+
+        for (Stat stat : Stat.values()) {
+            if (stats.getAll()[i] < conditionStats.get(stat))
+                return false;
+            i++;
         }
 
         return true;
